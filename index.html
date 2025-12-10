@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MCP Demo Store</title>
+
+  <!-- ✅ MCP SDK -->
+  <script src="https://cdn.evgjs.com/cloudodysseyitsolutionsltd/salesforce-interactions.min.js"></script>
+
+  <script>
+    SalesforceInteractions.init({
+      cookieDomain: window.location.hostname
+    }).then(() => {
+
+      /* ✅ Simulate PDP view */
+      window.viewProduct = function () {
+        SalesforceInteractions.sendEvent({
+          interaction: { name: "View Product" },
+          catalogObject: {
+            type: "Product",
+            id: "2010456",
+            attributes: {
+              name: "Demo Jacket",
+              price: 199,
+              url: window.location.href
+            }
+          }
+        });
+        alert("✅ View Product sent");
+      };
+
+      /* ✅ Simulate Purchase */
+      window.purchaseProduct = function () {
+        SalesforceInteractions.sendEvent({
+          interaction: {
+            name: "Purchase",
+            type: "order"
+          },
+          order: {
+            id: "ORDER-" + Date.now(),
+            totalValue: 199,
+            currency: "USD"
+          },
+          lineItems: [
+            {
+              catalogObjectType: "Product",
+              catalogObjectId: "2010456",
+              quantity: 1,
+              price: 199
+            }
+          ]
+        });
+        alert("✅ Purchase sent");
+      };
+
+    });
+  </script>
+</head>
+
+<body style="font-family: Arial; padding: 40px">
+  <h1>MCP Demo Store</h1>
+  <p>Product: <b>Demo Jacket</b></p>
+  <p>Price: <b>$199</b></p>
+
+  <button onclick="viewProduct()">View Product</button>
+  <br><br>
+  <button onclick="purchaseProduct()">Purchase</button>
+</body>
+</html>
