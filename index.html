@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>MCP Demo Store</title>
 
-  <!-- ✅ MCP SDK -->
+  <!-- ✅ Salesforce Personalization (MCP) SDK -->
   <script src="https://cdn.evgjs.com/cloudodysseyitsolutionsltd/salesforce-interactions.min.js"></script>
 
   <script>
@@ -12,7 +12,19 @@
       cookieDomain: window.location.hostname
     }).then(() => {
 
-      /* ✅ Simulate PDP view */
+      /* ✅ REQUIRED: initSitemap */
+      SalesforceInteractions.initSitemap({
+        global: {
+          onActionEvent: (event) => event
+        },
+        pageTypes: [{
+          name: "Demo Store Page",
+          isMatch: () => true,
+          action: () => {}
+        }]
+      });
+
+      /* ✅ View Product */
       window.viewProduct = function () {
         SalesforceInteractions.sendEvent({
           interaction: { name: "View Product" },
@@ -26,41 +38,37 @@
             }
           }
         });
-        alert("✅ View Product sent");
+        alert("✅ View Product event sent");
       };
 
-      /* ✅ Simulate Purchase */
+      /* ✅ Purchase (ORDER EVENT – CORRECT FORMAT) */
       window.purchaseProduct = function () {
         SalesforceInteractions.sendEvent({
-          interaction: {
-            name: "Purchase",
-            type: "order"
-          },
+          interaction: { name: "Purchase" },
           order: {
             id: "ORDER-" + Date.now(),
             totalValue: 199,
             currency: "USD"
           },
-          lineItems: [
-            {
-              catalogObjectType: "Product",
-              catalogObjectId: "2010456",
-              quantity: 1,
-              price: 199
-            }
-          ]
+          lineItems: [{
+            catalogObjectType: "Product",
+            catalogObjectId: "2010456",
+            quantity: 1,
+            price: 199
+          }]
         });
-        alert("✅ Purchase sent");
+        alert("✅ Purchase event sent");
       };
 
     });
   </script>
 </head>
 
-<body style="font-family: Arial; padding: 40px">
+<body style="font-family: Arial, sans-serif; padding: 40px;">
   <h1>MCP Demo Store</h1>
-  <p>Product: <b>Demo Jacket</b></p>
-  <p>Price: <b>$199</b></p>
+
+  <p><b>Product:</b> Demo Jacket</p>
+  <p><b>Price:</b> $199</p>
 
   <button onclick="viewProduct()">View Product</button>
   <br><br>
